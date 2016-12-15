@@ -1,32 +1,33 @@
-# README #
+# README
 
-This README would normally document whatever steps are necessary to get your application up and running.
+## Installation
 
-### Installation ###
-
-### Configuration ###
+### Configuration
 
 ```config/main.php```
 
-	// application components
-	'components' => array(
-		
-		[...]
-		
-		'wuweather' => array(
-			"class"  => 'ext.yii-wu-weather.WuWeather',
-			"apiKey" => 'YOUR_API_KEY',
-			"cache"  => array(
-				'lifetime' => 43200,     // in seconds, 43200 sec = 12 hours
-				'distance' => 300,       // distance
-				'unit'     => 'miles',   // [optional] distance in miles, default is meter 
-			),
-		),
+    ```php
+    // application components
+    'components' => array(
+    
+    [...]
+    
+        'wuweather' => array(
+            "class"  => 'ext.yii-wu-weather.WuWeather',
+            "apiKey" => 'YOUR_API_KEY',
+            "cache"  => array(
+                'lifetime' => 43200,     // in seconds, 43200 sec = 12 hours
+                'distance' => 300,       // distance
+                'unit'     => 'miles',   // [optional] distance in miles, default is meter 
+        ),
+    ),
+    ```
 
-## Documentation ##
+## Documentation
 
-### Requests ###
+### Requests
 
+    ```php
     /** @var WuWeather $wuweather */
     $wuweather = Yii::app()->wuweather;
 
@@ -36,22 +37,22 @@ This README would normally document whatever steps are necessary to get your app
         ->setLanguage("DL")
         ->setLocation(52.5050, 13.4050)
         ->request();
-
-### Output ###
-
-    $this->getController()->widget(
-        'ext.yii-wu-weather.widgets.renderer.WuWeatherRenderer',
-        array(
-            'response' => $response,
-        )
-    );
+    ```
     
-#### Overwrite templates ####
+### Render/Output
+
+    ```php
+    $this->getController()->widget('ext.yii-wu-weather.widgets.renderer.WuWeatherStandardForecastRenderer', array(
+        'response' => WuWeatherStandardRequestJSONTransformer::Create()->transform($request->getResponse()),
+    ));
+    ```
     
-    $this->getController()->widget(
-        'ext.yii-wu-weather.widgets.renderer.WuWeatherRenderer',
-        array(
-            'response'         => $response,
-            'templateForecast' => 'YOUR_OWN_TAMPLATE',
-        )
-    );
+#### Custom Templates
+    
+    ```php
+    $this->getController()->widget('ext.yii-wu-weather.widgets.renderer.WuWeatherStandardForecastRenderer', array(
+        'response' => WuWeatherStandardRequestJSONTransformer::Create()->transform($request->getResponse()),
+        'template' => 'ALIAS_TO_CUSTOM_TEMPLATE',
+        'feature'  => 'forecast',                  // optional - to validate requested feature in the response
+    ));
+    ```
